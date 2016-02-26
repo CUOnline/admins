@@ -1,0 +1,9 @@
+- @admins.each do |a|
+  li [class='list-group-item']
+    b Name: #{a["user"]["name"]}
+    br
+    b ID: #{a["user"]["sis_user_id"]}
+    br
+    b Role: #{a["role"]}
+    br
+    button [class='user' id='#{ a["user"]["id"] }'] Load contact & activity

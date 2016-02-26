@@ -1,0 +1,14 @@
+div class='row'
+div id='loading'
+  | Loading Data &nbsp;&nbsp;
+  span class='glyphicon glyphicon-refresh'
+
+ul class='list-group'
+- @schools.each do |s|
+  li id='#{s['id']}' class='list-group-item school'
+    span class='dropdown'
+      h3 #{s['name']}
+      span class='glyphicon glyphicon-chevron-down'
+    span class='badge'>
+    br
+    span class='content'

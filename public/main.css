@@ -1,0 +1,44 @@
+h3 {
+  display: inline;
+}
+
+ul {
+  margin-bottom: 0 !important;
+}
+
+#loading {
+  width: 100%;
+  text-align: center;
+}
+
+.badge {
+  position: relative;
+  top: 2px;
+}
+
+.content {
+  margin-top: 10px;
+}
+
+.glyphicon-chevron-up, .glyphicon-chevron-down{
+  margin-left: 10px;
+}
+
+.glyphicon-refresh {
+  animation: spin 1s infinite linear;
+  -webkit-animation: spin2 1s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg); }
+    to { transform: scale(1) rotate(360deg); }
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+
+.badge, .content, .glyphicon-chevron-down {
+  display: none;
+}
