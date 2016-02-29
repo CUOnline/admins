@@ -1,3 +1,3 @@
 source 'https://rubygems.org'
 
-gem 'wolf'
+gem 'wolf', :git => 'https://github.com/CUOnline/wolf'
