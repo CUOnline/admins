@@ -1,6 +1,7 @@
 # encoding: UTF-8
+require 'bundler/setup'
 require 'wolf'
-require './admins'
+require './admin_app'
 
 map('/auth') { run Wolf::Auth }
-map('/')     { run Admins }
+map('/')     { run AdminApp }
