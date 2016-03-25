@@ -1,3 +1,6 @@
+require 'bundler/setup'
+require 'wolf'
+
 class AdminApp < Wolf::Base
   set :root, File.dirname(__FILE__)
   self.setup
