@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/CUOnline/wolf_core
-  revision: 272299d5ad4a16ad22255ef032c3921e9f121c7f
+  revision: bd58cbdeca8f0094c9d637063a79c4edb3da0fa4
   specs:
     wolf_core (0.0.1)
       dbd-odbc (~> 0.2)
@@ -60,7 +60,7 @@ GEM
     mocha (1.1.0)
       metaclass (~> 0.0.1)
     mono_logger (1.1.0)
-    multi_json (1.11.3)
+    multi_json (1.12.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (3.1.1)
