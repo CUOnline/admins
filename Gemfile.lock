@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/CUOnline/wolf_core
-  revision: bd58cbdeca8f0094c9d637063a79c4edb3da0fa4
+  revision: d5c80e1f34c9186f66d8d979ef60749f3fa5b12c
   specs:
     wolf_core (0.0.1)
       dbd-odbc (~> 0.2)
@@ -35,7 +35,7 @@ GEM
     capistrano-bundler (1.1.4)
       capistrano (~> 3.1)
       sshkit (~> 1.2)
-    capistrano-harrow (0.4.0)
+    capistrano-harrow (0.5.1)
     dbd-odbc (0.2.5)
       dbi (>= 0.4.0)
     dbi (0.4.5)

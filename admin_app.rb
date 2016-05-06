@@ -1,11 +1,10 @@
 require 'bundler/setup'
 require 'wolf_core'
+require 'wolf_core/auth'
 
 class AdminApp < WolfCore::App
   set :root, File.dirname(__FILE__)
   self.setup
-
-  use WolfCore::AuthFilter
 
   get '/' do
     @schools = canvas_api(:get, "accounts/#{settings.canvas_account_id}/" \
