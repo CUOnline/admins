@@ -1,3 +1,5 @@
+require "bundler/setup"
+
 # Load DSL and set up stages
 require "capistrano/setup"
 
@@ -5,7 +7,7 @@ require "capistrano/setup"
 require "capistrano/deploy"
 
 # Include custom deployment tasks
-require 'wolf_core/deploy'
+require "wolf_core/deploy"
 
 # Include tasks from other gems included in your Gemfile
 #

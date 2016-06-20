@@ -4,7 +4,7 @@ require 'wolf_core/auth'
 
 class AdminApp < WolfCore::App
   set :root, File.dirname(__FILE__)
-  self.setup
+  set :views, ["#{root}/views", settings.base_views]
 
   get '/' do
     @schools = canvas_api(:get, "accounts/#{settings.canvas_account_id}/" \
