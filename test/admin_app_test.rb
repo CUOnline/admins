@@ -71,6 +71,7 @@ class AdminAppTest < Minitest::Test
     assert_equal 200, last_response.status
     admins.each do |a|
       assert_match /#{a['user']['name']}/, last_response.body
+      assert_match /#{a['user']['id']}/, last_response.body
       assert_match /#{a['user']['sis_user_id']}/, last_response.body
       assert_match /#{a['role']}/, last_response.body
     end

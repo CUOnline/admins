@@ -1,3 +1,23 @@
+GIT
+  remote: https://github.com/CUOnline/wolf_core
+  revision: ba93abe1b1d64a949fe609d98813a7973948b527
+  specs:
+    wolf_core (0.0.1)
+      dbd-odbc (~> 0.2)
+      dbi (~> 0.4)
+      ims-lti (~> 1.1)
+      json (~> 1.8)
+      mail (~> 2.6)
+      rack-ssl-enforcer (~> 0.2)
+      rake (~> 10.5)
+      resque (~> 1.25)
+      rest-client (~> 1.8)
+      ruby-odbc (~> 0.99997)
+      sinatra (~> 1.4)
+      sinatra-config-file (~> 1.0)
+      sinatra-flash (~> 0.3)
+      slim (~> 3.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -15,7 +35,7 @@ GEM
     capistrano-bundler (1.1.4)
       capistrano (~> 3.1)
       sshkit (~> 1.2)
-    capistrano-harrow (0.5.1)
+    capistrano-harrow (0.5.2)
     dbd-odbc (0.2.5)
       dbi (>= 0.4.0)
     dbi (0.4.5)
@@ -95,21 +115,6 @@ GEM
     unf_ext (0.0.7.2)
     vegas (0.1.11)
       rack (>= 1.0.0)
-    wolf_core (0.0.1)
-      dbd-odbc (~> 0.2)
-      dbi (~> 0.4)
-      ims-lti (~> 1.1)
-      json (~> 1.8)
-      mail (~> 2.6)
-      rack-ssl-enforcer (~> 0.2)
-      rake (~> 10.5)
-      resque (~> 1.25)
-      rest-client (~> 1.8)
-      ruby-odbc (~> 0.99997)
-      sinatra (~> 1.4)
-      sinatra-config-file (~> 1.0)
-      sinatra-flash (~> 0.3)
-      slim (~> 3.0)
 
 PLATFORMS
   ruby
@@ -121,7 +126,7 @@ DEPENDENCIES
   minitest (~> 5.8)
   minitest-rg (~> 5.2)
   mocha (~> 1.1)
-  wolf_core (= 0.0.1)
+  wolf_core!
 
 BUNDLED WITH
    1.12.4

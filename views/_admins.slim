@@ -1,9 +1,11 @@
 - @admins.each do |a|
   li [class='list-group-item']
-    b Name: #{a["user"]["name"]}
+    b Name: #{a['user']['name']}
     br
-    b ID: #{a["user"]["sis_user_id"]}
+    b Canvas ID: #{a['user']['id'] || 'N/A'}
     br
-    b Role: #{a["role"]}
+    b SIS ID: #{a['user']['sis_user_id'] || 'N/A'}
     br
-    button [class='user' id='#{ a["user"]["id"] }'] Load contact & activity
+    b Role: #{a['role']}
+    br
+    button [class='user' id='#{ a['user']['id'] }'] Load contact & activity
