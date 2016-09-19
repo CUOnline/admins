@@ -1,8 +1,10 @@
 require_relative '../admin_app'
+
 require 'minitest/autorun'
 require 'minitest/rg'
 require 'mocha/mini_test'
 require 'rack/test'
+require 'webmock/minitest'
 
 # Turn on SSL for all requests
 class Rack::Test::Session
@@ -22,12 +24,24 @@ class AdminAppTest < Minitest::Test
     AdminApp
   end
 
+  def login(session_params = {})
+    defaults = {
+      'user_id' => '123',
+      'user_roles' => ['AccountAdmin'],
+      'user_email' => 'test@example.com'
+    }
+
+    env 'rack.session', defaults.merge(session_params)
+  end
+
   def setup
-    # Log in
-    env 'rack.session', {'user_id' => '123', 'user_roles' => ['AccountAdmin']}
+    WebMock.enable!
+    WebMock.disable_net_connect!(allow_localhost: true)
   end
 
   def test_get
+    token = '1a2b3c'
+    account_id = '123'
     sub_accounts = [{
       'name' => 'School of Busniess',
       'id' => 123
@@ -35,9 +49,16 @@ class AdminAppTest < Minitest::Test
       'name' => 'School of Medicine',
       'id' => 456
     }]
-    app.any_instance.expects(:canvas_api).once.returns(sub_accounts)
+    response = OpenStruct.new(:body => sub_accounts)
 
+    app.settings.stubs(:canvas_token).returns(token)
+    app.settings.stubs(:canvas_account_id).returns(account_id)
+    stub_request(:get, /accounts\/#{account_id}\/sub_accounts\?access_token=#{token}&per_page=100/)
+      .to_return(:body => sub_accounts, :headers => {'Content-Type' => 'application/json'})
+
+    login
     get '/'
+
     assert_equal 200, last_response.status
     sub_accounts.each do |s|
       assert_match /#{s['name']}/, last_response.body
@@ -45,8 +66,23 @@ class AdminAppTest < Minitest::Test
     end
   end
 
+  def test_get_unauthenticated
+    get '/'
+    assert_equal 302, last_response.status
+    follow_redirect!
+    assert_equal '/canvas-auth-login', last_request.path
+  end
+
+  def test_get_unauthorized
+    login({'user_roles' => ['StudentEnrollment']})
+    get '/'
+    assert_equal 302, last_response.status
+    follow_redirect!
+    assert_equal '/unauthorized', last_request.path
+  end
+
   def test_get_admins
-    account_id = 1
+    sub_account_id = 999
     admins = [{
       'user' => {
         'id' => 123,
@@ -63,52 +99,58 @@ class AdminAppTest < Minitest::Test
       'role' => 'Admin'
     }]
 
-    app.any_instance.expects(:canvas_api)
-                         .with(:get, "accounts/#{account_id}/admins")
-                         .returns(admins)
+    profile_responses = [{'profile1' => 'data'}, {'profile2' => 'data'}].map(&:to_json)
+    page_view_responses = [{'page_view_1' => 'data'}, {'page_view_2' => 'data'}].map(&:to_json)
+    profile_links = ['profile_link_1', 'profile_link_2']
+    email_links = ['email_link_1', 'email_link_2']
+    timestamps = ['timestamp_1', 'timestamp_2']
 
-    get "/admins/#{account_id}"
+    stub_request(:get, /accounts\/#{sub_account_id}\/admins/)
+      .to_return(:body => admins.to_json, :headers => {'Content-Type' => 'application/json'})
+
+    admins.each_with_index do |a, i|
+      stub_request(:get, /users\/#{a['user']['id']}\/profile/)
+        .to_return(:body => profile_responses[i], :headers => {'Content-Type' => 'application/json'})
+      stub_request(:get, /users\/#{a['user']['id']}\/page_views/)
+        .to_return(:body => page_view_responses[i], :headers => {'Content-Type' => 'application/json'})
+
+      app.any_instance.expects(:profile_link)
+                      .with(a['user']['id'], a['user']['name'])
+                      .returns(profile_links[i])
+      app.any_instance.expects(:email_link_from_response)
+                      .with(instance_of(Faraday::Response))
+                      .returns(email_links[i])
+      app.any_instance.expects(:last_activity_from_response)
+                      .with(instance_of(Faraday::Response))
+                      .returns(timestamps[i])
+    end
+
+    login
+    get "/admins/#{sub_account_id}"
+
     assert_equal 200, last_response.status
-    admins.each do |a|
-      assert_match /#{a['user']['name']}/, last_response.body
+    admins.each_with_index do |a, i|
+      assert_match /#{profile_links[i]}/, last_response.body
+      assert_match /#{email_links[i]}/, last_response.body
+      assert_match /#{timestamps[i]}/, last_response.body
       assert_match /#{a['user']['id']}/, last_response.body
       assert_match /#{a['user']['sis_user_id']}/, last_response.body
       assert_match /#{a['role']}/, last_response.body
     end
   end
 
-  def test_get_user
-    user_id = 1
-    user_email = 'test@gmail.com'
-    user_last_activity = 'January 01, 1970'
-    app.any_instance.expects(:canvas_api)
-                         .with(:get, "/users/#{user_id}/profile")
-                         .returns({'primary_email' => user_email})
-
-    app.any_instance.expects(:canvas_api)
-                         .with(:get, "/users/#{user_id}/page_views")
-                         .returns([{'created_at' => user_last_activity}])
-
-    get "/user/#{user_id}"
-    assert_equal 200, last_response.status
-    assert_match /#{user_email}/, last_response.body
-    assert_match /#{user_last_activity}/, last_response.body
+  def test_get_admins_unauthenticated
+    get '/'
+    assert_equal 302, last_response.status
+    follow_redirect!
+    assert_equal '/canvas-auth-login', last_request.path
   end
 
-  def test_get_user_missing_data
-    user_id = 1
-    app.any_instance.expects(:canvas_api)
-                         .with(:get, "/users/#{user_id}/profile")
-                         .returns({})
-
-    app.any_instance.expects(:canvas_api)
-                         .with(:get, "/users/#{user_id}/page_views")
-                         .returns([{}])
-
-    get "/user/#{user_id}"
-    assert_equal 200, last_response.status
-    assert_match /N\/A/, last_response.body
-    assert_match /N\/A/, last_response.body
+  def test_get_admins_unauthorized
+    login({'user_roles' => ['StudentEnrollment']})
+    get '/'
+    assert_equal 302, last_response.status
+    follow_redirect!
+    assert_equal '/unauthorized', last_request.path
   end
-
 end

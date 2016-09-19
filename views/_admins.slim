@@ -1,11 +1,17 @@
-- @admins.each do |a|
-  li [class='list-group-item']
-    b Name: #{a['user']['name']}
-    br
-    b Canvas ID: #{a['user']['id'] || 'N/A'}
-    br
-    b SIS ID: #{a['user']['sis_user_id'] || 'N/A'}
-    br
-    b Role: #{a['role']}
-    br
-    button [class='user' id='#{ a['user']['id'] }'] Load contact & activity
+table [class='admin-table' width='100%' border='0' cellspacing='0' cellpadding='0']
+  tr
+    th Name
+    th Email
+    th Last Activity
+    th Role
+    th Canvas ID
+    th SIS ID
+
+  - @admins.each do |a|
+    tr [class='admin-row']
+      td == profile_link(a['user']['id'], a['user']['name'])
+      td == email_link_from_response(a['user']['email'])
+      td = last_activity_from_response(a['user']['last_activity'])
+      td = a['role']
+      td = a['user']['id'] || 'N/A'
+      td = a['user']['sis_user_id'] || 'N/A'
