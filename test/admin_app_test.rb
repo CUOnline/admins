@@ -37,6 +37,7 @@ class AdminAppTest < Minitest::Test
   def setup
     WebMock.enable!
     WebMock.disable_net_connect!(allow_localhost: true)
+    app.set :api_cache, false
   end
 
   def test_get
